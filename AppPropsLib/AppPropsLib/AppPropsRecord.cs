@@ -27,6 +27,10 @@ namespace AppPropsLib {
 			get { return _key; }
 		}
 
+		public bool IsEmpty {
+			get { return HashKey.StartsWith("Empty_"); }
+		}
+
 		public AppPropsRecord(String originalLine)
 			: this(originalLine, -1) { }
 
@@ -54,7 +58,7 @@ namespace AppPropsLib {
 				return ToString();
 			}
 
-			if (HashKey.StartsWith("Empty_")) {
+			if (IsEmpty) {
 				return _originalLine;
 			}
 

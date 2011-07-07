@@ -4,11 +4,18 @@ using NUnit.Framework;
 using System.Text;
 
 namespace AppPropsLib.Tests {
+
 	[TestFixture]
 	public class AppPropsTest {
 		private readonly String _path = "app.properties";
 
-		private void SaveFile(String contents) {
+		#region help-methods
+
+		private AppProps GetAppProps() {
+			return AppProps.FromFile(_path);
+		}
+
+		private void CreateFile(String contents) {
 			File.WriteAllText(_path, contents);
 		}
 
@@ -17,12 +24,14 @@ namespace AppPropsLib.Tests {
 			File.Delete(_path);
 		}
 
+		#endregion
+
 		[Test]
 		public void Can_read_simple_file() {
-			SaveFile("key=value");
-			var p = new AppProps(_path);
+			CreateFile("key=value");
+			var p = GetAppProps();
 			Assert.AreEqual("value", p.Get("key"));
-			Assert.AreEqual(1, p.GetInternalProperty("Count"));
+			Assert.AreEqual(1, p.InternalInvoke("Count", null));
 		}
 
 		[Test]
@@ -33,20 +42,44 @@ namespace AppPropsLib.Tests {
 			for (Int32 i = 0; i < count; i++) {
 				sb.AppendLine(String.Format("key{0}=value{0}#comment{0}", i));
 			}
-			SaveFile(sb.ToString());
+			CreateFile(sb.ToString());
 
 			// do
-			var p = new AppProps(_path);
+			var p = GetAppProps();
 
 			// verify
-			Assert.AreEqual(count, p.GetInternalProperty("Count"));
+			Assert.AreEqual(count, p.InternalInvoke("Count", null));
 			for (Int32 i = 0; i < count; i++) {
 				Assert.AreEqual("value" + i, p.Get("key" + i));
 			}
 		}
+
 		[Test]
-		public void Can_save_multiple_lines_file() {// TODO: split it to multiple test cases
+		public void Can_return_0_items_from_empty_file() {
+			CreateFile(String.Empty);
+			var p = GetAppProps();
+			Assert.NotNull(p);
+			Assert.AreEqual(0, p.InternalInvoke("Count", null));
+		}
+
+		[Test]
+		public void Can_return_1_emtpty_item_from_one_empty_line_file() {
+			var sb = new StringBuilder();
+			sb.AppendLine(String.Empty);
+			CreateFile(sb.ToString());
+
+			var p = GetAppProps();
+
+			Assert.NotNull(p);
+			Assert.AreEqual(1, p.InternalInvoke("Count", null));
+			Assert.IsTrue(((AppPropsRecord)p.InternalInvoke("GetRecordAt", 0)).IsEmpty);
+
+		}
+
+		[Test]
+		public void Can_save_multiple_lines_file() {// TODO: break this epic test down into multiple test cases
 			// prepare
+
 			var sb = new StringBuilder();
 			const int count = 10;
 			for (Int32 i = 0; i < count; i++) {
@@ -56,10 +89,11 @@ namespace AppPropsLib.Tests {
 					sb.AppendLine(i % 2 == 0 ? "#comment_only_" + i : String.Format("key{0}=value{0}#comment{0}", i));
 				}
 			}
-			SaveFile(sb.ToString());
+			CreateFile(sb.ToString());
 
 			// do
-			var p = new AppProps(_path);
+
+			var p = GetAppProps();
 			for (Int32 i = 0; i < count; i++) {
 				if (i % 3 == 0 && i % 2 != 0) {
 					p.Set(string.Format("key{0}", i), string.Format("{0}_modified", p.Get("key" + i)));
