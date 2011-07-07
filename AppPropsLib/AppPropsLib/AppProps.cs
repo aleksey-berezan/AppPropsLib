@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace AppPropsLib {
 
 	public class AppProps {
-
-		// useful for unit testing
-		// kinda encapsulation hack :)
-		private readonly Dictionary<String, Func<Object, Object>> _internalProperties = new Dictionary<String, Func<Object, Object>>();
 
 		private readonly Dictionary<String, AppPropsRecord> _propertiesDic = new Dictionary<String, AppPropsRecord>();
 		private readonly List<AppPropsRecord> _propertiesList = new List<AppPropsRecord>();
@@ -22,9 +19,6 @@ namespace AppPropsLib {
 				_propertiesDic.Add(record.HashKey, record);
 				_propertiesList.Add(record);
 			}
-
-			_internalProperties.Add("Count", arg => _propertiesDic.Count);
-			_internalProperties.Add("GetRecordAt", arg => _propertiesList[(Int32)arg]);
 		}
 
 		public static AppProps FromFile(String path) {
@@ -53,12 +47,8 @@ namespace AppPropsLib {
 			_propertiesList.Add(record);
 		}
 
-		/// <summary>Created for unit-testing. 
-		/// Allows to access private methods/properties. 
-		/// 
-		/// See source code for details. </summary>
-		public Object InternalInvoke(String key, Object arg) {
-			return _internalProperties[key](arg);
+		public Int32 Count {
+			get { return _propertiesList.Count(p => !p.IsEmpty); }
 		}
 
 		public Boolean Exists(String key) {

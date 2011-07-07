@@ -31,7 +31,7 @@ namespace AppPropsLib.Tests {
 			CreateFile("key=value");
 			var p = GetAppProps();
 			Assert.AreEqual("value", p.Get("key"));
-			Assert.AreEqual(1, p.InternalInvoke("Count", null));
+			Assert.AreEqual(1, p.Count);
 		}
 
 		[Test]
@@ -48,7 +48,7 @@ namespace AppPropsLib.Tests {
 			var p = GetAppProps();
 
 			// verify
-			Assert.AreEqual(count, p.InternalInvoke("Count", null));
+			Assert.AreEqual(count, p.Count);
 			for (Int32 i = 0; i < count; i++) {
 				Assert.AreEqual("value" + i, p.Get("key" + i));
 			}
@@ -59,7 +59,7 @@ namespace AppPropsLib.Tests {
 			CreateFile(String.Empty);
 			var p = GetAppProps();
 			Assert.NotNull(p);
-			Assert.AreEqual(0, p.InternalInvoke("Count", null));
+			Assert.AreEqual(0, p.Count);
 		}
 
 		[Test]
@@ -71,9 +71,8 @@ namespace AppPropsLib.Tests {
 			var p = GetAppProps();
 
 			Assert.NotNull(p);
-			Assert.AreEqual(1, p.InternalInvoke("Count", null));
-			Assert.IsTrue(((AppPropsRecord)p.InternalInvoke("GetRecordAt", 0)).IsEmpty);
-
+			p.SaveToFile(_path);
+			Assert.AreEqual(1, File.ReadAllLines(_path).Length);
 		}
 
 		[Test]
