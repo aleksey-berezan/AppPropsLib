@@ -7,6 +7,7 @@ namespace AppPropsLib.Tests {
 
 	[TestFixture]
 	public class AppPropsTest {
+
 		private readonly String _path = "app.properties";
 
 		#region help-methods
@@ -119,6 +120,21 @@ namespace AppPropsLib.Tests {
 			for (Int32 i = 0; i < count; i++) {
 				Assert.AreEqual(string.Format("key{0}{0}=value{0}{0}", i), lines[i + count]);
 			}
+		}
+
+		[Test]
+		public void Can_remove_item() {
+			var sb = new StringBuilder();
+			sb.AppendLine("key1=value1");
+			sb.AppendLine("key2=value2");
+			CreateFile(sb.ToString());
+
+			var p = GetAppProps();
+			p.Remove("key1");
+			p.SaveToFile(_path);
+
+			Assert.AreEqual(1, File.ReadAllLines(_path).Length);
+			Assert.AreEqual("key2=value2", File.ReadAllLines(_path)[0]);
 		}
 	}
 }

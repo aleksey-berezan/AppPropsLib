@@ -7,8 +7,9 @@ namespace AppPropsLib {
 		private readonly static String _keyValuePattern = @"[^#]+=[^#]+";
 		private readonly static String _commentPattern = "#+.*";
 
-		private readonly String _key;
 		private readonly String _hashKey;
+
+		private readonly String _key;
 		private String _value;
 
 		private readonly String _originalLine;

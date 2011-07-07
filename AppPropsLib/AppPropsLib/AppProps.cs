@@ -47,6 +47,11 @@ namespace AppPropsLib {
 			_propertiesList.Add(record);
 		}
 
+		public void Remove(String key) {
+			_propertiesDic.Remove(key);
+			_propertiesList.Remove(_propertiesList.First(p => p.Key == key));
+		}
+
 		public Int32 Count {
 			get { return _propertiesList.Count(p => !p.IsEmpty); }
 		}
