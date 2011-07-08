@@ -14,18 +14,18 @@ namespace AppPropsLib.Tests {
 
 		[Test]
 		public void Can_parse_line_with_comments() {
-			var r = new AppPropsRecord("key=value#bla-bla");
+			var r = new AppPropsRecord("key=value#blah-blah");
 			Assert.AreEqual("key", r.Key);
 			Assert.AreEqual("value", r.Value);
-			Assert.AreEqual("key=value#bla-bla", r.ToString(true));
+			Assert.AreEqual("key=value#blah-blah", r.ToString(true));
 		}
 
 		[Test]
 		public void Can_parse_line_with_comments_with_double_delimiter() {
-			var r = new AppPropsRecord("key=value####bla-bla");
+			var r = new AppPropsRecord("key=value####blah-blah");
 			Assert.AreEqual("key", r.Key);
 			Assert.AreEqual("value", r.Value);
-			Assert.AreEqual("key=value####bla-bla", r.ToString(true));
+			Assert.AreEqual("key=value####blah-blah", r.ToString(true));
 		}
 
 		[Test]
@@ -41,6 +41,5 @@ namespace AppPropsLib.Tests {
 			Assert.AreEqual("", r.Key);
 			Assert.AreEqual("", r.Value);
 		}
-
 	}
 }

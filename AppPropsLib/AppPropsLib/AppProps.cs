@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
@@ -60,6 +61,10 @@ namespace AppPropsLib {
 			set {
 				_propertiesDic[key].Value = value;
 			}
+		}
+
+		public ReadOnlyCollection<AppPropsRecord> Items {
+			get { return _propertiesDic.Values.Where(p => !p.IsEmpty).ToList().AsReadOnly(); }
 		}
 
 		public void Append(String key, String value) {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using NUnit.Framework;
 using System.Text;
@@ -176,6 +177,26 @@ namespace AppPropsLib.Tests {
 			Assert.AreEqual("value2", merged["key1"]);
 
 			AssertItemsCountInOutputFile(merged, 1);
+		}
+
+		public void Can_return_all_non_empty_items() {
+			// prepare
+			var sb = new StringBuilder();
+			sb.AppendLine("key1=value1");
+			sb.AppendLine("key2=value2");
+			sb.AppendLine("");
+			sb.AppendLine("#blah-blah-blah");
+			sb.AppendLine("#");
+			CreateFile(sb.ToString());
+
+			// do
+			var records = GetAppProps().Items;
+
+			// verify
+			Assert.NotNull(records);
+			Assert.AreEqual(2, records);
+			Assert.AreEqual("key1=value1", records[0].ToString(true));
+			Assert.AreEqual("key2=value2", records[1].ToString(true));
 		}
 	}
 }
