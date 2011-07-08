@@ -41,7 +41,7 @@ namespace AppPropsLib.Tests {
 		public void Can_read_simple_file() {
 			CreateFile("key=value");
 			var p = GetAppProps();
-			Assert.AreEqual("value", p.Get("key"));
+			Assert.AreEqual("value", p["key"]);
 			Assert.AreEqual(1, p.Count);
 		}
 
@@ -61,7 +61,7 @@ namespace AppPropsLib.Tests {
 			// verify
 			Assert.AreEqual(count, p.Count);
 			for (Int32 i = 0; i < count; i++) {
-				Assert.AreEqual("value" + i, p.Get("key" + i));
+				Assert.AreEqual("value" + i, p["key" + i]);
 			}
 		}
 
@@ -107,7 +107,7 @@ namespace AppPropsLib.Tests {
 			var p = GetAppProps();
 			for (Int32 i = 0; i < count; i++) {
 				if (i % 3 == 0 && i % 2 != 0) {
-					p.Set(string.Format("key{0}", i), string.Format("{0}_modified", p.Get("key" + i)));
+					p[string.Format("key{0}", i)] = string.Format("{0}_modified", p["key" + i]);
 				}
 			}
 			for (Int32 i = 0; i < count; i++) {
@@ -125,7 +125,9 @@ namespace AppPropsLib.Tests {
 				} else if (i % 5 == 0) {
 					Assert.AreEqual("", actual);
 				} else {
-					Assert.AreEqual(i % 2 == 0 ? string.Format("#comment_only_{0}", i) : String.Format("key{0}=value{0}#comment{0}", i), actual);
+					Assert.AreEqual(i % 2 == 0
+						? string.Format("#comment_only_{0}", i)
+						: String.Format("key{0}=value{0}#comment{0}", i), actual);
 				}
 			}
 			for (Int32 i = 0; i < count; i++) {
@@ -157,8 +159,8 @@ namespace AppPropsLib.Tests {
 
 			var merged = AppProps.Merge(p1, p2);
 
-			Assert.AreEqual("value1", merged.Get("key1"));
-			Assert.AreEqual("value2", merged.Get("key2"));
+			Assert.AreEqual("value1", merged["key1"]);
+			Assert.AreEqual("value2", merged["key2"]);
 
 			AssertItemsCount(merged, 2);
 		}
@@ -172,7 +174,7 @@ namespace AppPropsLib.Tests {
 
 			var merged = AppProps.Merge(p1, p2);
 
-			Assert.AreEqual("value2", merged.Get("key1"));
+			Assert.AreEqual("value2", merged["key1"]);
 
 			AssertItemsCount(merged, 1);
 		}

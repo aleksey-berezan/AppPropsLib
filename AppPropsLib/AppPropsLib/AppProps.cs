@@ -36,7 +36,7 @@ namespace AppPropsLib {
 			// merging and overriding it with items from overridee
 			foreach (var appProps in overrideProps._propertiesDic.Values) {
 				if (merged.Exists(appProps.Key)) {
-					merged.Set(appProps.Key, appProps.Value);
+					merged[appProps.Key] = appProps.Value;
 				} else {
 					merged.Append(appProps.Key, appProps.Value);
 				}
@@ -53,12 +53,13 @@ namespace AppPropsLib {
 			}
 		}
 
-		public String Get(String key) {
-			return _propertiesDic[key].Value;
-		}
-
-		public void Set(String key, String value) {
-			_propertiesDic[key].Value = value;
+		public String this[String key] {
+			get {
+				return _propertiesDic[key].Value;
+			}
+			set {
+				_propertiesDic[key].Value = value;
+			}
 		}
 
 		public void Append(String key, String value) {
