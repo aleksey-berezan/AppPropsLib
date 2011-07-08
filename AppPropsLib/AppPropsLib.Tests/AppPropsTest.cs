@@ -25,6 +25,16 @@ namespace AppPropsLib.Tests {
 			File.Delete(_path);
 		}
 
+		private static void AssertItemsCount(AppProps p, int count) {
+			String path = Path.GetTempFileName();
+			p.SaveToFile(path);
+			try {
+				Assert.AreEqual(count, File.ReadAllLines(path).Length);
+			} finally {
+				File.Delete(path);
+			}
+		}
+
 		#endregion
 
 		[Test]
@@ -72,8 +82,9 @@ namespace AppPropsLib.Tests {
 			var p = GetAppProps();
 
 			Assert.NotNull(p);
-			p.SaveToFile(_path);
-			Assert.AreEqual(1, File.ReadAllLines(_path).Length);
+			int count = 1;
+
+			AssertItemsCount(p, count);
 		}
 
 		[Test]
@@ -135,6 +146,35 @@ namespace AppPropsLib.Tests {
 
 			Assert.AreEqual(1, File.ReadAllLines(_path).Length);
 			Assert.AreEqual("key2=value2", File.ReadAllLines(_path)[0]);
+		}
+
+		[Test]
+		public void Can_merge_non_intersecting_props() {
+			var p1 = new AppProps();
+			p1.Append("key1", "value1");
+			var p2 = new AppProps();
+			p2.Append("key2", "value2");
+
+			var merged = AppProps.Merge(p1, p2);
+
+			Assert.AreEqual("value1", merged.Get("key1"));
+			Assert.AreEqual("value2", merged.Get("key2"));
+
+			AssertItemsCount(merged, 2);
+		}
+
+		[Test]
+		public void Can_merge_intersecting_props() {
+			var p1 = new AppProps();
+			p1.Append("key1", "value1");
+			var p2 = new AppProps();
+			p2.Append("key1", "value2");
+
+			var merged = AppProps.Merge(p1, p2);
+
+			Assert.AreEqual("value2", merged.Get("key1"));
+
+			AssertItemsCount(merged, 1);
 		}
 	}
 }

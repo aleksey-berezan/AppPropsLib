@@ -25,6 +25,26 @@ namespace AppPropsLib {
 			return new AppProps(path);
 		}
 
+		public static AppProps Merge(AppProps baseProps, AppProps overrideProps) {
+			var merged = new AppProps();
+
+			// collecting items from base
+			foreach (var appProps in baseProps._propertiesDic.Values) {
+				merged.Append(appProps.Key, appProps.Value);
+			}
+
+			// merging and overriding it with items from overridee
+			foreach (var appProps in overrideProps._propertiesDic.Values) {
+				if (merged.Exists(appProps.Key)) {
+					merged.Set(appProps.Key, appProps.Value);
+				} else {
+					merged.Append(appProps.Key, appProps.Value);
+				}
+			}
+
+			return merged;
+		}
+
 		public void SaveToFile(String path) {
 			using (var sw = File.CreateText(path)) {
 				foreach (var record in _propertiesList) {
