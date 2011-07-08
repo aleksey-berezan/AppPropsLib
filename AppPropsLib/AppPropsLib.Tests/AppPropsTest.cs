@@ -25,7 +25,7 @@ namespace AppPropsLib.Tests {
 			File.Delete(_path);
 		}
 
-		private static void AssertItemsCount(AppProps p, int count) {
+		private static void AssertItemsCountInOutputFile(AppProps p, int count) {
 			String path = Path.GetTempFileName();
 			p.SaveToFile(path);
 			try {
@@ -84,13 +84,12 @@ namespace AppPropsLib.Tests {
 			Assert.NotNull(p);
 			int count = 1;
 
-			AssertItemsCount(p, count);
+			AssertItemsCountInOutputFile(p, count);
 		}
 
 		[Test]
 		public void Can_save_multiple_lines_file() {// TODO: break this epic test down into multiple test cases
 			// prepare
-
 			var sb = new StringBuilder();
 			const int count = 10;
 			for (Int32 i = 0; i < count; i++) {
@@ -162,7 +161,7 @@ namespace AppPropsLib.Tests {
 			Assert.AreEqual("value1", merged["key1"]);
 			Assert.AreEqual("value2", merged["key2"]);
 
-			AssertItemsCount(merged, 2);
+			AssertItemsCountInOutputFile(merged, 2);
 		}
 
 		[Test]
@@ -176,7 +175,7 @@ namespace AppPropsLib.Tests {
 
 			Assert.AreEqual("value2", merged["key1"]);
 
-			AssertItemsCount(merged, 1);
+			AssertItemsCountInOutputFile(merged, 1);
 		}
 	}
 }
