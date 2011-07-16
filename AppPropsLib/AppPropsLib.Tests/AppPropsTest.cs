@@ -1,29 +1,28 @@
 using System;
-using System.Collections.ObjectModel;
 using System.IO;
-using NUnit.Framework;
 using System.Text;
+using NUnit.Framework;
 
 namespace AppPropsLib.Tests {
 
 	[TestFixture]
 	public class AppPropsTest {
 
-		private readonly String _path = "app.properties";
+		private const String Path = "app.properties";
 
 		#region help-methods
 
 		private AppProps GetAppProps() {
-			return AppProps.FromFile(_path);
+			return AppProps.FromFile(Path);
 		}
 
 		private void CreateFile(String contents) {
-			File.WriteAllText(_path, contents);
+			File.WriteAllText(Path, contents);
 		}
 
 		[TearDown]
 		public void DeleteFile() {
-			File.Delete(_path);
+			File.Delete(Path);
 		}
 
 		private static void AssertItemsCountInOutputFile(AppProps p, int count) {
@@ -113,11 +112,11 @@ namespace AppPropsLib.Tests {
 			for (Int32 i = 0; i < count; i++) {
 				p.Append(string.Format("key{0}{0}", i), string.Format("value{0}{0}", i));
 			}
-			p.SaveToFile(_path);
+			p.SaveToFile(Path);
 
 			// verify
 
-			String[] lines = File.ReadAllLines(_path);
+			String[] lines = File.ReadAllLines(Path);
 			for (Int32 i = 0; i < count; i++) {
 				string actual = lines[i];
 				if (i % 3 == 0 && i % 2 != 0) {
@@ -144,10 +143,10 @@ namespace AppPropsLib.Tests {
 
 			var p = GetAppProps();
 			p.Remove("key1");
-			p.SaveToFile(_path);
+			p.SaveToFile(Path);
 
-			Assert.AreEqual(1, File.ReadAllLines(_path).Length);
-			Assert.AreEqual("key2=value2", File.ReadAllLines(_path)[0]);
+			Assert.AreEqual(1, File.ReadAllLines(Path).Length);
+			Assert.AreEqual("key2=value2", File.ReadAllLines(Path)[0]);
 		}
 
 		[Test]
@@ -179,6 +178,7 @@ namespace AppPropsLib.Tests {
 			AssertItemsCountInOutputFile(merged, 1);
 		}
 
+		[Test]
 		public void Can_return_all_non_empty_items() {
 			// prepare
 			var sb = new StringBuilder();
@@ -194,7 +194,7 @@ namespace AppPropsLib.Tests {
 
 			// verify
 			Assert.NotNull(records);
-			Assert.AreEqual(2, records);
+			Assert.AreEqual(2, records.Count);
 			Assert.AreEqual("key1=value1", records[0].ToString(true));
 			Assert.AreEqual("key2=value2", records[1].ToString(true));
 		}
