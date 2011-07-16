@@ -8,21 +8,21 @@ namespace AppPropsLib.Tests {
 	[TestFixture]
 	public class AppPropsTest {
 
-		private const String Path = "app.properties";
+		private const String AppPropertiesPath = "app.properties";
 
 		#region help-methods
 
-		private AppProps GetAppProps() {
-			return AppProps.FromFile(Path);
+		private static AppProps GetAppProps() {
+			return AppProps.FromFile(AppPropertiesPath);
 		}
 
-		private void CreateFile(String contents) {
-			File.WriteAllText(Path, contents);
+		private static void CreateFile(String contents) {
+			File.WriteAllText(AppPropertiesPath, contents);
 		}
 
 		[TearDown]
 		public void DeleteFile() {
-			File.Delete(Path);
+			File.Delete(AppPropertiesPath);
 		}
 
 		private static void AssertItemsCountInOutputFile(AppProps p, int count) {
@@ -112,11 +112,11 @@ namespace AppPropsLib.Tests {
 			for (Int32 i = 0; i < count; i++) {
 				p.Append(string.Format("key{0}{0}", i), string.Format("value{0}{0}", i));
 			}
-			p.SaveToFile(Path);
+			p.SaveToFile(AppPropertiesPath);
 
 			// verify
 
-			String[] lines = File.ReadAllLines(Path);
+			String[] lines = File.ReadAllLines(AppPropertiesPath);
 			for (Int32 i = 0; i < count; i++) {
 				string actual = lines[i];
 				if (i % 3 == 0 && i % 2 != 0) {
@@ -143,10 +143,10 @@ namespace AppPropsLib.Tests {
 
 			var p = GetAppProps();
 			p.Remove("key1");
-			p.SaveToFile(Path);
+			p.SaveToFile(AppPropertiesPath);
 
-			Assert.AreEqual(1, File.ReadAllLines(Path).Length);
-			Assert.AreEqual("key2=value2", File.ReadAllLines(Path)[0]);
+			Assert.AreEqual(1, File.ReadAllLines(AppPropertiesPath).Length);
+			Assert.AreEqual("key2=value2", File.ReadAllLines(AppPropertiesPath)[0]);
 		}
 
 		[Test]

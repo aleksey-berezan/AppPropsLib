@@ -8,25 +8,12 @@ namespace AppPropsLib {
 		private const String CommentPattern = "#+.*";
 		private const string EmptyPrefix = "Empty_";
 
-		private readonly String _hashKey;
-		private readonly String _key;
-		private String _value;
-
 		private readonly String _originalLine;
 		private readonly Int32 _lineNumber;
 
-		public String Value {
-			get { return _value; }
-			set { _value = value; }
-		}
-
-		internal String HashKey {
-			get { return _hashKey; }
-		}
-
-		public String Key {
-			get { return _key; }
-		}
+		public string Value { get; set; }
+		public string Key { get; private set; }
+		internal string HashKey { get; private set; }
 
 		public bool IsEmpty {
 			get { return HashKey.StartsWith(EmptyPrefix); }
@@ -45,12 +32,12 @@ namespace AppPropsLib {
 			var match = Regex.Match(_originalLine, KeyValuePattern);
 			String[] pair;
 			if (match.Groups.Count == 1 && (pair = match.Value.Trim().Split('=')).Length == 2) {
-				_hashKey = _key = pair[0].Trim();
-				_value = pair[1].Trim();
+				HashKey = Key = pair[0].Trim();
+				Value = pair[1].Trim();
 			} else {
-				_hashKey = EmptyPrefix + _lineNumber;
-				_key = String.Empty;
-				_value = String.Empty;
+				HashKey = EmptyPrefix + _lineNumber;
+				Key = String.Empty;
+				Value = String.Empty;
 			}
 		}
 
