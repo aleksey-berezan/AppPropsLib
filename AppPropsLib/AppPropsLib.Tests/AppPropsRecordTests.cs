@@ -41,5 +41,14 @@ namespace AppPropsLib.Tests {
 			Assert.AreEqual("", r.Key);
 			Assert.AreEqual("", r.Value);
 		}
+
+		[Test]
+		public void Can_parse_connection_string() {
+			const string key = "connection.connection_string";
+			const string value = @"Server=.\SQLEXPRESS;Initial catalog=master;Integrated Security=SSPI;";
+
+			var r = new AppPropsRecord(key + "=" + value);
+			Assert.AreEqual(value, r.Value);
+		}
 	}
 }

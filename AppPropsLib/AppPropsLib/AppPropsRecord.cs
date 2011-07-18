@@ -31,7 +31,7 @@ namespace AppPropsLib {
 
 			var match = Regex.Match(_originalLine, KeyValuePattern);
 			String[] pair;
-			if (match.Groups.Count == 1 && (pair = match.Value.Trim().Split('=')).Length == 2) {
+			if (match.Groups.Count == 1 && (pair = SplitToKeyValue(originalLine)).Length == 2) {
 				HashKey = Key = pair[0].Trim();
 				Value = pair[1].Trim();
 			} else {
@@ -55,6 +55,25 @@ namespace AppPropsLib {
 
 		public override String ToString() {
 			return ToString(false);
+		}
+
+		private static String[] SplitToKeyValue(String s) {
+			int splitIndex = s.IndexOf('=');
+			if (splitIndex > 0 && splitIndex < s.Length) {
+				String[] result = new String[2];
+				result[0] = s.Substring(0, splitIndex);
+
+				// extract non-comment part from value
+				var value = s.Substring(splitIndex + 1, s.Length - splitIndex - 1);
+				int commentIndex = value.IndexOf('#');
+				if (commentIndex > -1) {
+					value = value.Substring(0, commentIndex);
+				}
+				result[1] = value;
+
+				return result;
+			}
+			return new String[0];
 		}
 	}
 }
