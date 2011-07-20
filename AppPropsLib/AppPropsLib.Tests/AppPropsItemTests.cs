@@ -3,18 +3,18 @@
 namespace AppPropsLib.Tests {
 
 	[TestFixture]
-	public class AppPropsRecordTests {
+	public class AppPropsItemTests {
 
 		[Test]
 		public void Can_parse_simple_line() {
-			var r = new AppPropsRecord("key=value");
+			var r = new AppPropsItem("key=value");
 			Assert.AreEqual("key", r.Key);
 			Assert.AreEqual("value", r.Value);
 		}
 
 		[Test]
 		public void Can_parse_line_with_comments() {
-			var r = new AppPropsRecord("key=value#blah-blah");
+			var r = new AppPropsItem("key=value#blah-blah");
 			Assert.AreEqual("key", r.Key);
 			Assert.AreEqual("value", r.Value);
 			Assert.AreEqual("key=value#blah-blah", r.ToString(true));
@@ -22,7 +22,7 @@ namespace AppPropsLib.Tests {
 
 		[Test]
 		public void Can_parse_line_with_comments_with_double_delimiter() {
-			var r = new AppPropsRecord("key=value####blah-blah");
+			var r = new AppPropsItem("key=value####blah-blah");
 			Assert.AreEqual("key", r.Key);
 			Assert.AreEqual("value", r.Value);
 			Assert.AreEqual("key=value####blah-blah", r.ToString(true));
@@ -30,14 +30,14 @@ namespace AppPropsLib.Tests {
 
 		[Test]
 		public void Can_parse_simple_line_with_white_spaces() {
-			var r = new AppPropsRecord("    key    =    value");
+			var r = new AppPropsItem("    key    =    value");
 			Assert.AreEqual("key", r.Key);
 			Assert.AreEqual("value", r.Value);
 		}
 
 		[Test]
 		public void Can_parse_empty_line() {
-			var r = new AppPropsRecord("");
+			var r = new AppPropsItem("");
 			Assert.AreEqual("", r.Key);
 			Assert.AreEqual("", r.Value);
 		}
@@ -47,7 +47,7 @@ namespace AppPropsLib.Tests {
 			const string key = "connection.connection_string";
 			const string value = @"Server=.\SQLEXPRESS;Initial catalog=master;Integrated Security=SSPI;";
 
-			var r = new AppPropsRecord(key + "=" + value);
+			var r = new AppPropsItem(key + "=" + value);
 			Assert.AreEqual(value, r.Value);
 		}
 	}

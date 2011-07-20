@@ -7,7 +7,6 @@ namespace AppPropsLib.Tests {
 
 	[TestFixture]
 	public class AppPropsTests {
-
 		private const String AppPropertiesPath = "app.properties";
 
 		#region help-methods
@@ -216,13 +215,61 @@ namespace AppPropsLib.Tests {
 			CreateFile(sb.ToString());
 
 			// do
-			var records = GetAppProps().Items;
+			var items = GetAppProps().Items;
 
 			// verify
-			Assert.NotNull(records);
-			Assert.AreEqual(2, records.Count);
-			Assert.AreEqual("key1=value1", records[0].ToString(true));
-			Assert.AreEqual("key2=value2", records[1].ToString(true));
+			Assert.NotNull(items);
+			Assert.AreEqual(2, items.Count);
+			Assert.AreEqual("key1=value1", items[0].ToString(true));
+			Assert.AreEqual("key2=value2", items[1].ToString(true));
+		}
+
+		[Test]
+		public void Can_return_false_when_dont_contains_requested_key() {
+			var sb = new StringBuilder();
+			sb.AppendLine("key1=value1");
+			CreateFile(sb.ToString());
+
+			Assert.IsFalse(GetAppProps().ContainsKey("not_existing_key"));
+		}
+
+		[Test]
+		public void Can_return_true_when_contains_requested_key() {
+			var sb = new StringBuilder();
+			sb.AppendLine("key1=value1");
+			CreateFile(sb.ToString());
+
+			Assert.IsTrue(GetAppProps().ContainsKey("key1"));
+		}
+
+		[Test]
+		public void Can_initialize_from_string_collection_ctor() {
+			var appProps = new AppProps(new[] { "key1=value1", "key2=value2" });
+
+			Assert.AreEqual(2, appProps.Count);
+			Assert.AreEqual("value1", appProps["key1"]);
+			Assert.AreEqual("value2", appProps["key2"]);
+		}
+
+		[Test]
+		public void Can_initialize_from_items_collection_ctor() {
+			var appProps = new AppProps(new[] { new AppPropsItem("key1=value1"), new AppPropsItem("key2=value2") });
+
+			Assert.AreEqual(2, appProps.Count);
+			Assert.AreEqual("value1", appProps["key1"]);
+			Assert.AreEqual("value2", appProps["key2"]);
+		}
+
+		[Test]
+		public void Can_return_existing_value_when_contains_key() {
+			var appProps = new AppProps(new[] { new AppPropsItem("key1=value1"), new AppPropsItem("key2=value2") });
+			Assert.AreEqual("value1", appProps.GetExistingOrDefault("key1", "defaultValue"));
+		}
+
+		[Test]
+		public void Can_return_default_value_when_dont_contains_key() {
+			var appProps = new AppProps(new[] { new AppPropsItem("key1=value1"), new AppPropsItem("key2=value2") });
+			Assert.AreEqual("defaultValue", appProps.GetExistingOrDefault("not_existing", "defaultValue"));
 		}
 	}
 }

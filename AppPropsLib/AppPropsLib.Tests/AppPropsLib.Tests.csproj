@@ -45,7 +45,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppPropsRecordTests.cs" />
+    <Compile Include="AppPropsItemTests.cs" />
     <Compile Include="AppPropsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

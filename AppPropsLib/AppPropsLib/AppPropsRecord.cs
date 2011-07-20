@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace AppPropsLib {
 
-	public sealed class AppPropsRecord {
+	public sealed class AppPropsItem {
 		private const String KeyValuePattern = @"[^#]+=[^#]+";
 		private const String CommentPattern = "#+.*";
 		private const string EmptyPrefix = "Empty_";
@@ -19,13 +19,13 @@ namespace AppPropsLib {
 			get { return HashKey.StartsWith(EmptyPrefix); }
 		}
 
-		public AppPropsRecord(String originalLine)
+		public AppPropsItem(String originalLine)
 			: this(originalLine, -1) { }
 
-		public AppPropsRecord(String key, String value)
+		public AppPropsItem(String key, String value)
 			: this(String.Format("{0}={1}", key, value), -1) { }
 
-		public AppPropsRecord(String originalLine, Int32 lineNumber) {
+		public AppPropsItem(String originalLine, Int32 lineNumber) {
 			_originalLine = originalLine;
 			_lineNumber = lineNumber;
 
