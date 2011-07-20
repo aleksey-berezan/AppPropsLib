@@ -36,6 +36,8 @@ namespace AppPropsLib {
 
 			// merging and overriding it with items from overridee
 			foreach (var appProps in overrideProps._propertiesDic.Values) {
+				if (appProps.IsEmpty) continue;
+
 				if (merged.Exists(appProps.Key)) {
 					merged[appProps.Key] = appProps.Value;
 				} else {

@@ -179,13 +179,39 @@ namespace AppPropsLib.Tests {
 		}
 
 		[Test]
+		public void Can_merge_props_with_empty_lines() {
+			// prepare
+			// create base props
+			var sb = new StringBuilder();
+			sb.AppendLine("key1=value1");
+			sb.AppendLine("");// with empty line
+			CreateFile(sb.ToString());
+			var baseProps = GetAppProps();
+
+			// create override props
+			sb = new StringBuilder();
+			sb.AppendLine("");
+			sb.AppendLine("key2=value2");
+			CreateFile(sb.ToString());
+			var overrideProps = GetAppProps();
+
+			// dp
+			var mergedProps = AppProps.Merge(baseProps, overrideProps);
+
+			// verify
+			Assert.AreEqual(2, mergedProps.Count);
+			Assert.AreEqual("value1", mergedProps["key1"]);
+			Assert.AreEqual("value2", mergedProps["key2"]);
+		}
+
+		[Test]
 		public void Can_return_all_non_empty_items() {
 			// prepare
 			var sb = new StringBuilder();
 			sb.AppendLine("key1=value1");
 			sb.AppendLine("key2=value2");
 			sb.AppendLine("");
-			sb.AppendLine("#blah-blah-blah");
+			sb.AppendLine("#some comment ...");
 			sb.AppendLine("#");
 			CreateFile(sb.ToString());
 
